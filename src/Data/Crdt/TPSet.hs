@@ -3,17 +3,17 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE TypeSynonymInstances #-}
 
-module TPSet where
+module Data.Crdt.TPSet where
 
-import Crdt
-import GSet
+import Data.Crdt
+import Data.Crdt.GSet
 
 import qualified Data.Set as Set
 
 data TPSet a = TPSet { adds :: GSet a, removes :: GSet a }
 
 instance (Ord a) => Structure (TPSet a) (SetOp a) (Set.Set a) where
-    get s = Set.difference (adds s) (removes s)
+    value s = Set.difference (adds s) (removes s)
     update s (Add el) =
         s{ adds = Set.insert el (adds s)}
     update s (Remove el) =
