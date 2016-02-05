@@ -19,7 +19,6 @@ class (Ord key, Eq key) => CRMap s key val | s -> key val where
     set   :: s -> key -> val -> s
     unset :: s -> key -> s
     union :: s -> s -> s
-    diff  :: s -> s -> s
     
 
 instance (Ord k, Eq k, Structure m (MapOp k v) (Map.Map k v)) => CRMap m k v where
@@ -28,11 +27,9 @@ instance (Ord k, Eq k, Structure m (MapOp k v) (Map.Map k v)) => CRMap m k v whe
     unset m k = update m (Unset k)
     union     = merge
     toMap     = value
-    diff      = pack
 
 instance (CRMap m k v) => Structure m (MapOp k v) (Map.Map k v) where
     update m (Set k v) = set m k v
     update m (Unset k) = unset m k 
     value = toMap
     merge = union
-    pack  = diff

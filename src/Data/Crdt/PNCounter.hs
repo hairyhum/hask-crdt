@@ -5,14 +5,14 @@
 module Data.Crdt.PNCounter where
 
 import Data.Crdt
-import qualified Data.Crdt.Counter as Counter
+import Data.Crdt.Counter
 
 import qualified Data.Map as Map
 
 data PNCounter a n = PNCounter { actor :: a,  incs :: (Map.Map a n),  decs :: (Map.Map a n)} 
     deriving (Show, Eq, Read)
 
-instance (Num n, Ord n, Eq a, Ord a) => Counter.Counter (PNCounter a n) n where
+instance {-# OVERLAPPING #-} (Num n, Ord n, Eq a, Ord a) => Counter (PNCounter a n) n where
     toVal (PNCounter { incs = incs, decs = decs }) = 
         pos - neg
         where
@@ -36,4 +36,18 @@ instance (Num n, Ord n, Eq a, Ord a) => Counter.Counter (PNCounter a n) n where
             d1 = decs counter1
             d2 = decs counter2
 
-    
+
+instance (Num n, Ord n, Eq a, Ord a) => Packable (PNCounter a n) where
+    pack c1 c2 =
+        res_counter { incs = (Map.differenceWith not_equal ires i2),
+                      decs = (Map.differenceWith not_equal dres d2) }
+        where
+            ires = incs res_counter
+            i2 = incs c2 
+            dres = decs res_counter
+            d2 = decs c2 
+            
+            not_equal a b = if a == b then Nothing else Just a
+            res_counter = if diff > 0 then inc c2 diff else dec c2 (negate diff)
+            diff = (toVal c1) - (toVal c2)
+        

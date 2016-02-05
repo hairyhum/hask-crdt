@@ -17,4 +17,7 @@ instance (Ord n) => Structure (GSet n) (SetOp n) (Set.Set n) where
     update s (Add n) =
         Set.insert n s
     merge = Set.union
-    pack = merge
+
+
+instance (Ord n) => Packable (GSet n) where
+    pack = Set.difference

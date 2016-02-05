@@ -2,11 +2,13 @@
 {-# LANGUAGE FunctionalDependencies #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE TypeSynonymInstances #-}
+
 module Data.Crdt.ORSWOT where
 
 import Data.Crdt.VersionVector
 import Data.Crdt.Version
 import Data.Crdt.CRSet
+import Data.Crdt
 
 import qualified Data.Map as Map
 
@@ -47,7 +49,9 @@ instance (Ord v, Version version actor) => CRSet (ORSWOT v actor version) v wher
             clean_diff v = 
                 Map.filter (not . (child v))
 
-    diff ors1 ors2 = 
+
+instance (Ord v, Version version actor) => Packable (ORSWOT v actor version) where
+    pack ors1 ors2 =
         ors1 { version = packed_vers,
                values  = Map.map (\v -> if not (ancestor v packed_vers) 
                                         then dot act packed_vers
@@ -56,4 +60,12 @@ instance (Ord v, Version version actor) => CRSet (ORSWOT v actor version) v wher
         where 
             packed_vers = min_diff (version ors1) (version ors2)
             act         = (actor ors1)
+
+
+
+
+
+
+
+
 

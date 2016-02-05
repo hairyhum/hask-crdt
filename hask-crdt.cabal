@@ -18,11 +18,16 @@ library
   exposed-modules:     Data.Crdt, 
                        Data.Crdt.TPSet, 
                        Data.Crdt.GSet, 
+                       Data.Crdt.ACounter,
                        Data.Crdt.PNCounter,
                        Data.Crdt.CRSet, 
                        Data.Crdt.CRMap, 
                        Data.Crdt.Counter, 
-                       Data.Crdt.Register 
+                       Data.Crdt.Register,
+                       Data.Crdt.ORSWOT,
+                       Data.Crdt.Version,
+                       Data.Crdt.VersionVector
+
 
   build-depends:       base >= 4.7 && < 5,
                        containers >= 0.5.6.2

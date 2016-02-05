@@ -17,18 +17,15 @@ class (Ord val, Eq val) => CRSet s val | s -> val where
     add    :: s -> val -> s
     remove :: s -> val -> s
     union  :: s -> s -> s
-    diff   :: s -> s -> s
 
 instance (CRSet s val) => Structure s (SetOp val) (Set.Set val) where
     value               = toSet
     update s (Add v)    = add s v
     update s (Remove v) = remove s v
-    merge = union
-    pack  = diff
+    merge               = union
 
 instance (Ord val, Eq val, Structure s (SetOp val) (Set.Set val)) => CRSet s val where
     toSet        = value
     add s val    = update s (Add val)
     remove s val = update s (Remove val)
     union        = merge
-    diff         = pack
